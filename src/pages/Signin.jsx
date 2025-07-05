@@ -10,7 +10,6 @@ import useAuth from "../stores/useAuthStore.jsx";
 const Signin = () => {
   const { login } = useAuth();
 
-  // Login form state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,7 +29,7 @@ const Signin = () => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
-    // Clear error when field is modified
+
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -60,27 +59,26 @@ const Signin = () => {
         password: formData.password,
       });
 
-      setIsSubmitting(false);
+      login(response.data.user);
 
-      if (response.data.statusCode < 400) {
-        login(response.data.data);
-        setFormData({
-          email: "",
-          password: "",
-          rememberMe: false,
-        });
-        setErrors({});
-        setShowPassword(false);
-      } else {
-        setErrors({
-          form: response.data.message || "Login failed. Please try again.",
-        });
-      }
+      setFormData({
+        email: "",
+        password: "",
+        rememberMe: false,
+      });
+
+      setErrors({});
+      setShowPassword(false);
+
+      navigate("/");
     } catch (error) {
-      setIsSubmitting(false);
+      console.error("Login error:", error);
+      toast.error("Login failed. Please check your credentials and try again.");
       setErrors({
         form: "Login failed. Please check your credentials and try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
