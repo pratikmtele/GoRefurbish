@@ -10,52 +10,68 @@ import Signup from "./pages/Signup";
 import Header from "./components/Header";
 import Signin from "./pages/Signin";
 import Footer from "./components/Footer";
-import {ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import useAuth from "./stores/useAuthStore.jsx";
 
 const App = () => {
-
-  const checkAuth = useAuth((state) => state.checkAuth);
-  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const { checkAuth, isAuthenticated } = useAuth();
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, [isAuthenticated]);
 
   return (
     <div>
       <Header />
       <ToastContainer
-        className="toast-container"
-        toastClassName="toast"
-        bodyClassName="toast-body"
-        progressClassName="toast-progress"
-        closeButton={false}
-        draggable={true}
-        pauseOnHover={true}
-        theme="colored"
-        limit={3}
-        transition="slide"
-        draggablePercent={60}
-        closeOnClick={true}
-        rtl={false} 
-        position="top-right"
         autoClose={3000}
+        theme="colored"
+        position="top-right"
         hideProgressBar={false}
         newestOnTop={false}
-        pauseOnFocusLoss={false}  
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        className="toast-container"
       />
       <Routes>
-        <Route path="/signup" element={<Signup />  } />
-        <Route path="/signin" element={ <Signin /> } />
+        <Route
+          path="/signup"
+          element={!isAuthenticated ? <Signup /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/signin"
+          element={!isAuthenticated ? <Signin /> : <Navigate to="/" />}
+        />
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<About />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/list-product" element={<ProductListing />  } />
-        <Route path="/browse" element={<Browse /> } />
-        <Route path="/edit-product/:id" element={<ProductEdit /> } />
-        <Route path="/product/:id" element={<ProductDetails />  } />
+        <Route
+          path="/list-product"
+          element={
+            isAuthenticated ? <ProductListing /> : <Navigate to="/signin" />
+          }
+        />
+        <Route
+          path="/browse"
+          element={isAuthenticated ? <Browse /> : <Navigate to="/signin" />}
+        />
+        <Route
+          path="/edit-product/:id"
+          element={
+            isAuthenticated ? <ProductEdit /> : <Navigate to="/signin" />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            isAuthenticated ? <ProductDetails /> : <Navigate to="/signin" />
+          }
+        />
       </Routes>
       <Footer />
     </div>

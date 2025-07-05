@@ -56,3 +56,18 @@
     --color-brand-primary: var(--color-primary-600);
     --color-brand-secondary: var(--color-gray-600);
 }
+
+/* Custom toast container styles */
+.toast-container {
+    z-index: 9999 !important;
+    position: fixed !important;
+}
+
+/* Ensure toasts stay visible during page transitions */
+.Toastify__toast-container {
+    z-index: 9999 !important;
+}
+
+.Toastify__toast {
+    z-index: 9999 !important;
+}

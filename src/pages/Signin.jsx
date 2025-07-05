@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import Logo from "../assets/logo.jpg"; 
+import Logo from "../assets/logo.jpg";
 import { authService } from "../api/services.js";
 import { toast } from "react-toastify";
 import useAuth from "../stores/useAuthStore.jsx";
 
 const Signin = () => {
-  const {setIsAuthenticated, setToken, setUser} = useAuth();
+  const { login } = useAuth();
 
   // Login form state
   const [formData, setFormData] = useState({
@@ -49,33 +49,39 @@ const Signin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm())
-      return;
+    if (!validateForm()) return;
     setIsSubmitting(true);
-    const reponse = await authService.signin({email:formData.email, password:formData.password});
 
-    setIsSubmitting(false);
+    try {
+      const response = await authService.signin({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    if (reponse.success) {
-      setIsAuthenticated(true);
-      setUser(reponse.user);
-      setToken(reponse.token);
-      toast.success("Login successful!");
-      navigate("/");
+      setIsSubmitting(false);
+
+      if (response.data.statusCode < 400) {
+        login(response.data.data);
+        setFormData({
+          email: "",
+          password: "",
+          rememberMe: false,
+        });
+        setErrors({});
+        setShowPassword(false);
+      } else {
+        setErrors({
+          form: response.data.message || "Login failed. Please try again.",
+        });
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+      setErrors({
+        form: "Login failed. Please check your credentials and try again.",
+      });
     }
-    else {
-      setErrors({ form: reponse.message || "Login failed. Please try again." });
-    }
-    setFormData({
-      email: "",
-      password: "",
-      rememberMe: false,
-    });
-
-    setErrors({});
-    setShowPassword(false);
   };
 
   const togglePasswordVisibility = () => {
@@ -87,11 +93,7 @@ const Signin = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
-            <img
-              src={Logo}
-              alt="ReUsed Logo"
-              className="h-12 mx-auto mb-4"
-            />
+            <img src={Logo} alt="ReUsed Logo" className="h-12 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
             <p className="mt-2 text-gray-600">
               Sign in to your account to continue
@@ -100,6 +102,16 @@ const Signin = () => {
           <div className="bg-white shadow-lg rounded-lg p-8">
             {/* Login Form */}
             <form onSubmit={handleSubmit}>
+              {/* Display form-level error */}
+              {errors.form && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <div className="flex">
+                    <i className="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+                    <span className="text-red-700 text-sm">{errors.form}</span>
+                  </div>
+                </div>
+              )}
+
               <Input
                 label="Email or Username"
                 type="text"

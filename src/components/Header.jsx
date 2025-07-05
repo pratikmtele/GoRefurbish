@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../assets/logo.jpg";
+import useAuth from "../stores/useAuthStore";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const { isAuthenticated, user, logout } = useAuth();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -12,6 +17,18 @@ const Header = () => {
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
+  };
+
+  const toggleProfileDropdown = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  const closeProfileDropdown = () => {
+    setIsProfileDropdownOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   const menuItems = [
@@ -55,20 +72,109 @@ const Header = () => {
             </div>
 
             {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center">
-              <Link
-                to="/signin"
-                className="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/signup"
-                className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-              >
-                Sign Up
-              </Link>
-            </div>
+            {!isAuthenticated ? (
+              <div className="hidden md:flex items-center">
+                <Link
+                  to="/signin"
+                  className="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center relative">
+                {/* Profile Avatar */}
+                <div className="relative">
+                  <button
+                    onClick={toggleProfileDropdown}
+                    className="flex items-center p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    aria-expanded={isProfileDropdownOpen}
+                  >
+                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                      <i className="fas fa-user text-white text-sm"></i>
+                    </div>
+                    <i className="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                  </button>
+
+                  {/* Profile Dropdown */}
+                  {isProfileDropdownOpen && (
+                    <>
+                      {/* Backdrop */}
+                      <div
+                        className="fixed inset-0 z-30"
+                        onClick={closeProfileDropdown}
+                      ></div>
+
+                      {/* Dropdown Menu */}
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-40 border border-gray-200">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <p className="text-sm font-medium text-gray-900">
+                            {user.fullName}
+                          </p>
+                          <p className="text-xs text-gray-500">{user.email}</p>
+                        </div>
+
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeProfileDropdown}
+                        >
+                          <i className="fas fa-user mr-2"></i>
+                          My Profile
+                        </Link>
+
+                        <Link
+                          to="/my-listings"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeProfileDropdown}
+                        >
+                          <i className="fas fa-list mr-2"></i>
+                          My Listings
+                        </Link>
+
+                        <Link
+                          to="/favorites"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeProfileDropdown}
+                        >
+                          <i className="fas fa-heart mr-2"></i>
+                          Favorites
+                        </Link>
+
+                        <Link
+                          to="/settings"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeProfileDropdown}
+                        >
+                          <i className="fas fa-cog mr-2"></i>
+                          Settings
+                        </Link>
+
+                        <div className="border-t border-gray-100 mt-1">
+                          <button
+                            onClick={() => {
+                              // Add logout logic here
+                              handleLogout();
+                              closeProfileDropdown();
+                            }}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          >
+                            <i className="fas fa-sign-out-alt mr-2"></i>
+                            Log out
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Mobile Hamburger Button */}
             <button

@@ -1,10 +1,10 @@
-import api from './axios';
+import api from "./axios";
 
 // Authentication API calls
 export const authService = {
   signup: async (userData) => {
     try {
-      const response = await api.post('/users/signup', userData);
+      const response = await api.post("/users/signup", userData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -13,7 +13,7 @@ export const authService = {
 
   signin: async (credentials) => {
     try {
-      const response = await api.post('/users/signin', credentials);
+      const response = await api.post("/users/signin", credentials);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -22,28 +22,16 @@ export const authService = {
 
   logout: async () => {
     try {
-      const response = await api.post('/users/logout');
-      // Cookie will be cleared by the server
+      const response = await api.post("/users/logout");
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
   },
 
-//   getCurrentUser: async () => {
-//     try {
-//       const response = await api.get('/users/current');
-//       console.log('Current user data:', response.data);
-//       return response.data; 
-//     } catch (error) {
-//       console.log('getCurrentUser error:', error.response?.status);
-//       return null;
-//     }
-//   },
-
   updateProfile: async (userData) => {
     try {
-      const response = await api.put('/auth/profile', userData);
+      const response = await api.put("/auth/profile", userData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -56,7 +44,7 @@ export const productService = {
   // Get all products
   getProducts: async (params = {}) => {
     try {
-      const response = await api.get('/products', { params });
+      const response = await api.get("/products", { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -76,7 +64,7 @@ export const productService = {
   // Create new product
   createProduct: async (productData) => {
     try {
-      const response = await api.post('/products', productData);
+      const response = await api.post("/products", productData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -106,7 +94,9 @@ export const productService = {
   // Search products
   searchProducts: async (query) => {
     try {
-      const response = await api.get('/products/search', { params: { q: query } });
+      const response = await api.get("/products/search", {
+        params: { q: query },
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -119,7 +109,7 @@ export const categoryService = {
   // Get all categories
   getCategories: async () => {
     try {
-      const response = await api.get('/categories');
+      const response = await api.get("/categories");
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -143,11 +133,11 @@ export const uploadService = {
   uploadFile: async (file, onUploadProgress) => {
     try {
       const formData = new FormData();
-      formData.append('file', file);
-      
-      const response = await api.post('/upload', formData, {
+      formData.append("file", file);
+
+      const response = await api.post("/upload", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
         onUploadProgress,
       });
@@ -164,10 +154,10 @@ export const uploadService = {
       files.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-      
-      const response = await api.post('/upload/multiple', formData, {
+
+      const response = await api.post("/upload/multiple", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
         onUploadProgress,
       });
