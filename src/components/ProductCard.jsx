@@ -39,7 +39,7 @@ const ProductCard = ({
           className="w-full h-full object-cover object-top"
         />
         <button
-          className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 cursor-pointer"
+          className="absolute w-10 top-4 right-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 cursor-pointer"
           onClick={onFavoriteClick}
         >
           <i className="far fa-heart text-gray-600"></i>

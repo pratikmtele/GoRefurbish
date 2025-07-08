@@ -9,11 +9,14 @@ import Browse from "./pages/Browse";
 import Signup from "./pages/Signup";
 import Header from "./components/Header";
 import Signin from "./pages/Signin";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import useAuth from "./stores/useAuthStore.jsx";
+import OTPVerification from "./pages/OTPVerification.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const App = () => {
   const { checkAuth, isAuthenticated } = useAuth();
@@ -46,6 +49,18 @@ const App = () => {
         <Route
           path="/signin"
           element={!isAuthenticated ? <Signin /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/forgot-password"
+          element={!isAuthenticated ? <ForgotPassword /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/otp"
+          element={!isAuthenticated ? <OTPVerification /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/reset-password"
+          element={!isAuthenticated ? <ResetPassword /> : <Navigate to="/" />}
         />
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<About />} />

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const About = () => {
@@ -182,40 +181,6 @@ const About = () => {
             </div>
           </div>
         </div>
-
-        {/* Impact Stats */}
-        {/* <div className="bg-white rounded-lg shadow-lg p-8 mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            Our Impact
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                50,000+
-              </div>
-              <div className="text-gray-600">Items Refurbished</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">
-                25,000+
-              </div>
-              <div className="text-gray-600">Happy Sellers</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-purple-600 mb-2">
-                100,000+
-              </div>
-              <div className="text-gray-600">Satisfied Buyers</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-orange-600 mb-2">
-                500 Tons
-              </div>
-              <div className="text-gray-600">Waste Prevented</div>
-            </div>
-          </div>
-        </div> */}
-
         {/* Call to Action */}
         <div className="bg-blue-600 rounded-lg p-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">

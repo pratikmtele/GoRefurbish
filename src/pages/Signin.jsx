@@ -18,11 +18,10 @@ const Signin = () => {
 
   const navigate = useNavigate();
 
-  // Form validation state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  // Handle input changes
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -126,12 +125,12 @@ const Signin = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
-                  <a
-                    href="#"
+                  <Link
+                    to="/forgot-password"
                     className="text-sm text-primary-600 hover:text-primary-800"
                   >
                     Forgot Password?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Input
