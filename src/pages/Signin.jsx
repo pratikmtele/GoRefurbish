@@ -122,12 +122,12 @@ const Signin = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
-                  <a
-                    href="#"
+                  <Link
+                    to="/forgot-password"
                     className="text-sm text-primary-600 hover:text-primary-800"
                   >
                     Forgot Password?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Input

@@ -1,6 +1,6 @@
+import ResetPassword from "../pages/ResetPassword";
 import api from "./axios";
 
-// Authentication API calls
 export const authService = {
   signup: async (userData) => {
     try {
@@ -31,12 +31,43 @@ export const authService = {
 
   updateProfile: async (userData) => {
     try {
-      const response = await api.put("/auth/profile", userData);
+      const response = await api.put("/users/profile", userData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
   },
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await api.post("/users/forgot-password", { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  verifyOTP: async (email, otp) => {
+    try {
+      const response = await api.post("/users/verify-otp", { email, otp });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  resetPassword: async (email, otpString, newPassword) => {
+    try {
+      const response = await api.post("/users/reset-password", {
+        email,
+        otpString,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  }
 };
 
 // Product API calls
