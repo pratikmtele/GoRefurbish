@@ -6,7 +6,17 @@ import api from "../api/axios.js";
 const useAuth = create((set) => ({
   isAuthenticated: false,
   user: null,
-  login: (user) => set({ isAuthenticated: true, user }),
+  login: (user) => {
+    const userWithDefaults = {
+      ...user,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      aadhaarNumber: user.aadhaarNumber,
+      address: user.address,
+    };
+    set({ isAuthenticated: true, user: userWithDefaults });
+  },
   logout: async () => {
     try {
       await authService.logout();
@@ -20,18 +30,28 @@ const useAuth = create((set) => ({
     try {
       const response = await api.get("/users/current");
 
-      if (response.data.success)
-        set({ isAuthenticated: true, user: response.data.data });
-      else set({ isAuthenticated: false, user: null });
+      if (response.data.success) {
+        const userWithDefaults = {
+          ...response.data.data,
+          fullName: response.data.data.fullName,
+          email: response.data.data.email,
+          phone: response.data.data.phone,
+          aadhaarNumber: response.data.data.aadhaarNumber,
+          address: response.data.data.address,
+        };
+        set({ isAuthenticated: true, user: userWithDefaults });
+      } else set({ isAuthenticated: false, user: null });
     } catch (error) {
       console.log("Error checking authentication:", error.message);
     }
   },
 
-  performLogin: (user, token) => {
-    set({ isAuthenticated: true, user, token });
-  },
   setUser: (user) => set({ user }),
+
+  updateUser: (updates) =>
+    set((state) => ({
+      user: { ...state.user, ...updates },
+    })),
   setToken: (token) => set({ token }),
   setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
 }));

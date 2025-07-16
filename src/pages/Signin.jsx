@@ -4,7 +4,6 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Logo from "../assets/logo.jpg";
 import { authService } from "../api/services.js";
-import { toast } from "react-toastify";
 import useAuth from "../stores/useAuthStore.jsx";
 
 const Signin = () => {
@@ -18,11 +17,10 @@ const Signin = () => {
 
   const navigate = useNavigate();
 
-  // Form validation state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  // Handle input changes
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -72,8 +70,6 @@ const Signin = () => {
 
       navigate("/");
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please check your credentials and try again.");
       setErrors({
         form: "Login failed. Please check your credentials and try again.",
       });
@@ -100,7 +96,7 @@ const Signin = () => {
           <div className="bg-white shadow-lg rounded-lg p-8">
             {/* Login Form */}
             <form onSubmit={handleSubmit}>
-              {/* Display form-level error */}
+              {/* Displaying form-level error */}
               {errors.form && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
                   <div className="flex">

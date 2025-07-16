@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Header from "./components/Header";
 import Signin from "./pages/Signin";
 import Footer from "./components/Footer";
+import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
@@ -59,6 +60,10 @@ const App = () => {
         <Route
           path="/browse"
           element={isAuthenticated ? <Browse /> : <Navigate to="/signin" />}
+        />
+        <Route
+          path="/profile"
+          element={isAuthenticated ? <Profile /> : <Navigate to="/signin" />}
         />
         <Route
           path="/edit-product/:id"
