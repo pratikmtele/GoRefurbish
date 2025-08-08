@@ -9,13 +9,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
-    fullName: user?.fullName || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    aadhaarNumber: user?.aadhaarNumber || "",
-    address: user?.address || "",
-  });
+  const [formData, setFormData] = useState(user);
 
   const [errors, setErrors] = useState({});
 
@@ -53,12 +47,6 @@ const Profile = () => {
       newErrors.phone = "Phone number must be 10 digits";
     }
 
-    if (!formData.aadhaarNumber.trim()) {
-      newErrors.aadhaarNumber = "Aadhaar number is required";
-    } else if (!/^\d{12}$/.test(formData.aadhaarNumber.replace(/\s/g, ""))) {
-      newErrors.aadhaarNumber = "Aadhaar number must be 12 digits";
-    }
-
     if (!formData.address.trim()) {
       newErrors.address = "Address is required";
     }
@@ -76,7 +64,6 @@ const Profile = () => {
     try {
       // api call here
 
-      // Update user data in store
       updateUser(formData);
 
       toast.success("Profile updated successfully!");
@@ -95,57 +82,11 @@ const Profile = () => {
         fullName: user?.fullName || "",
         email: user?.email || "",
         phone: user?.phone || "",
-        aadhaarNumber: user?.aadhaarNumber || "",
         address: user?.address || "",
       });
       setErrors({});
     }
     setIsEditing(!isEditing);
-  };
-
-  const formatAadhaar = (value) => {
-    const cleaned = value.replace(/\D/g, "");
-    const match = cleaned.match(/^(\d{0,4})(\d{0,4})(\d{0,4})$/);
-    if (match) {
-      return [match[1], match[2], match[3]].filter(Boolean).join(" ");
-    }
-    return value;
-  };
-
-  const formatAadhaarForDisplay = (value) => {
-    const cleaned = value.replace(/\D/g, "");
-    if (cleaned.length >= 4) {
-      const lastFour = cleaned.slice(-4);
-      const maskedLength = Math.max(0, cleaned.length - 4);
-      const masked = "X".repeat(maskedLength);
-
-      const combined = masked + lastFour;
-      const formatted = combined.match(/.{1,4}/g)?.join(" ") || "";
-      return formatted;
-    }
-    return value;
-  };
-
-  const getAadhaarDisplayValue = () => {
-    if (isEditing) {
-      return formData.aadhaarNumber;
-    }
-    return formatAadhaarForDisplay(formData.aadhaarNumber);
-  };
-
-  const handleAadhaarChange = (e) => {
-    const formatted = formatAadhaar(e.target.value);
-    setFormData({
-      ...formData,
-      aadhaarNumber: formatted,
-    });
-
-    if (errors.aadhaarNumber) {
-      setErrors({
-        ...errors,
-        aadhaarNumber: "",
-      });
-    }
   };
 
   return (
@@ -222,14 +163,12 @@ const Profile = () => {
                 <Input
                   label="Aadhaar Card Number"
                   type="text"
-                  name="aadhaarNumber"
-                  value={getAadhaarDisplayValue()}
-                  onChange={handleAadhaarChange}
+                  value={formData.aadharCardNumber}
                   error={errors.aadhaarNumber}
                   touched={!!errors.aadhaarNumber}
-                  placeholder="Enter your 12-digit Aadhaar number"
-                  disabled={!isEditing}
-                  maxLength={14} // 12 digits + 2 spaces
+                  placeholder="Adhaar card is missing"
+                  disabled={true}
+                  maxLength={14}
                   className="mb-0"
                 />
               </div>

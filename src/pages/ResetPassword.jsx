@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
-import Logo from '../assets/logo.jpg'
-import Input from '../components/Input'
-import Button from '../components/Button'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { authService } from '../api/services.js'
-import { toast } from 'react-toastify'
+import { useState, useEffect } from "react";
+import Logo from "../assets/logo.jpg";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { authService } from "../api/services.js";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
-    newPassword: '',
-    confirmPassword: ''
+    newPassword: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,13 +18,13 @@ const ResetPassword = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const email = location.state?.email || '';
-  const otpString = location.state?.otpString || '';
+  const email = location.state?.email || "";
+  const otpString = location.state?.otpString || "";
 
   useEffect(() => {
     console.log(email, otpString);
     if (!email || !otpString) {
-      navigate('/forgot-password');
+      navigate("/forgot-password");
     }
   }, [email, otpString]);
 
@@ -32,54 +32,67 @@ const ResetPassword = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
 
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: ''
+        [name]: "",
       });
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.newPassword) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = "New password is required";
     } else if (formData.newPassword.length < 8) {
-      newErrors.newPassword = 'Password must be at least 8 characters long';
-    } 
-    
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.newPassword = "Password must be at least 8 characters long";
     }
-    
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.newPassword !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      const response = await authService.resetPassword({email, otp:otpString, newPassword:formData.newPassword});
+      const response = await authService.resetPassword(
+        email,
+        otpString,
+        formData.newPassword
+      );
       if (response.success) {
-        toast.success('Password reset successfully! You can now sign in with your new password.');
-        localStorage.removeItem('otpEndTime');
-        navigate('/signin');
+        toast.success(
+          "Password reset successfully! You can now sign in with your new password."
+        );
+        localStorage.removeItem("otpEndTime");
+        navigate("/signin");
       } else {
-        setErrors({ form: response.message || 'Failed to reset password. Please try again.' });
+        setErrors({
+          form:
+            response.message || "Failed to reset password. Please try again.",
+        });
       }
     } catch (error) {
-      setErrors({ form: error.message || 'An error occurred while resetting your password. Please try again.' });
+      setErrors({
+        form:
+          error.message ||
+          "An error occurred while resetting your password. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +118,7 @@ const ResetPassword = () => {
               Create a new password for your account
             </p>
           </div>
-          
+
           <div className="bg-white shadow-lg rounded-lg p-8">
             <form onSubmit={handleSubmit}>
               {errors.form && (
@@ -168,7 +181,7 @@ const ResetPassword = () => {
                     inputClassName="pr-10"
                   />
                 </div>
-                
+
                 {formData.confirmPassword && (
                   <div className="mt-2">
                     {formData.newPassword === formData.confirmPassword ? (
@@ -212,7 +225,7 @@ const ResetPassword = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default ResetPassword
+export default ResetPassword;

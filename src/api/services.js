@@ -56,18 +56,18 @@ export const authService = {
     }
   },
 
-  resetPassword: async (email, otpString, newPassword) => {
+  resetPassword: async (email, otp, newPassword) => {
     try {
       const response = await api.post("/users/reset-password", {
         email,
-        otpString,
+        otp,
         newPassword,
       });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
-  }
+  },
 };
 
 // Product API calls
