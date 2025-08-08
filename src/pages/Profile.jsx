@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useAuth from "../stores/useAuthStore";
 import { Button, Input } from "../components/index.js";
+import { authService } from "../api/services.js";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -61,14 +62,12 @@ const Profile = () => {
     setIsSubmitting(true);
 
     try {
-      // api call here
-
-      updateUser(formData);
+      const response = await authService.updateProfile(formData);
+      setFormData(response.data);
 
       toast.success("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
-      console.error("Profile update error:", error);
       toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsSubmitting(false);

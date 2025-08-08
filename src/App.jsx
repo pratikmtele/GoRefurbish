@@ -1,29 +1,42 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import Homepage from "./pages/Homepage";
-import About from "./pages/About";
-import HowItWorks from "./pages/HowItWorks";
-import ProductListing from "./pages/ProductListing";
-import ProductEdit from "./pages/ProductEdit";
-import ProductDetails from "./pages/ProductDetails";
-import Browse from "./pages/Browse";
-import Signup from "./pages/Signup";
-import Signin from "./pages/Signin";
-import ForgotPassword from "./pages/ForgotPassword.jsx";
-import Profile from "./pages/Profile";
+import {
+  Homepage,
+  About,
+  HowItWorks,
+  ProductListing,
+  ProductEdit,
+  ProductDetails,
+  Browse,
+  Signup,
+  Signin,
+  ForgotPassword,
+  Profile,
+  OTPVerification,
+  ResetPassword,
+} from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import useAuth from "./stores/useAuthStore.jsx";
-import OTPVerification from "./pages/OTPVerification.jsx";
-import ResetPassword from "./pages/ResetPassword.jsx";
 import { Footer, Header } from "./components/index.js";
 
 const App = () => {
-  const { checkAuth, isAuthenticated } = useAuth();
+  const { checkAuth, isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
     checkAuth();
-  }, [isAuthenticated]);
+  }, [checkAuth]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -91,6 +104,7 @@ const App = () => {
             isAuthenticated ? <ProductDetails /> : <Navigate to="/signin" />
           }
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />
     </div>

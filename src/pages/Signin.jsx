@@ -1,6 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Button } from "../components/index.js";
+import Input from "../components/Input";
+import Button from "../components/Button";
 import Logo from "../assets/logo.jpg";
 import { authService } from "../api/services.js";
 import useAuth from "../stores/useAuthStore.jsx";

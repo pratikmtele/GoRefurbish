@@ -6,13 +6,19 @@ import api from "../api/axios.js";
 const useAuth = create((set) => ({
   isAuthenticated: false,
   user: null,
+  isLoading: true,
   login: (user) => {
-    set({ isAuthenticated: true, user });
+    set({ isAuthenticated: true, user, isLoading: false });
   },
   logout: async () => {
     try {
       await authService.logout();
-      set({ isAuthenticated: false, user: null, token: null });
+      set({
+        isAuthenticated: false,
+        user: null,
+        token: null,
+        isLoading: false,
+      });
       toast.success("Logged out successfully");
     } catch (error) {
       console.error("Logout error: ", error);
@@ -23,10 +29,17 @@ const useAuth = create((set) => ({
       const response = await api.get("/users/current");
 
       if (response.data.success) {
-        set({ isAuthenticated: true, user: response.data.data });
-      } else set({ isAuthenticated: false, user: null });
+        set({
+          isAuthenticated: true,
+          user: response.data.data,
+          isLoading: false,
+        });
+      } else {
+        set({ isAuthenticated: false, user: null, isLoading: false });
+      }
     } catch (error) {
       console.log("Error checking authentication:", error.message);
+      set({ isAuthenticated: false, user: null, isLoading: false });
     }
   },
 

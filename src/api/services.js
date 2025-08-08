@@ -30,7 +30,7 @@ export const authService = {
 
   updateProfile: async (userData) => {
     try {
-      const response = await api.put("/users/profile", userData);
+      const response = await api.patch("/users/update", userData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
