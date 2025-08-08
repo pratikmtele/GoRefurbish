@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import ProductCard from "../components/ProductCard";
-import CategoryCard from "../components/CategoryCard";
-import Button from "../components/Button";
+import { useState } from "react";
 import FeaturedImage from "../assets/FeaturedImage.jpg";
+import { ProductCard, CategoryCard, Button } from "../components/index";
 
 const Homepage = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);

@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { Button, Input } from "../components/index.js";
 
 const ProductListing = () => {
   const [formData, setFormData] = useState({

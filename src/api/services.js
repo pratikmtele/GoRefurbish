@@ -1,4 +1,3 @@
-import ResetPassword from "../pages/ResetPassword";
 import api from "./axios";
 
 export const authService = {

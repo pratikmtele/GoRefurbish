@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { Input, Button } from "../components/index";
 import { authService } from "../api/services";
 import { toast } from "react-toastify";
 
@@ -77,26 +76,25 @@ const Signup = () => {
 
   const handlePrevStep = () => {
     setCurrentStep(currentStep - 1);
-  };  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       setIsSubmitting(true);
       setSubmitError("");
-    
+
       try {
         const response = await authService.signup(formData);
-        console.log('Signup response:', response.success);
+        console.log("Signup response:", response.success);
         if (response.success) {
           toast.success("Registration successful! Please sign in.");
-          navigate('/signin');       
+          navigate("/signin");
         }
       } catch (error) {
-        console.log('Signup error:', error);
+        console.log("Signup error:", error);
         setSubmitError(
-          error.message || 
-          'Registration failed. Please try again.'
+          error.message || "Registration failed. Please try again."
         );
       } finally {
         setIsSubmitting(false);
@@ -248,7 +246,7 @@ const Signup = () => {
             htmlFor="idNumber"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-           Aadhaar Card Number
+            Aadhaar Card Number
           </label>
           <input
             type="number"

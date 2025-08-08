@@ -7,10 +7,8 @@ import ProductEdit from "./pages/ProductEdit";
 import ProductDetails from "./pages/ProductDetails";
 import Browse from "./pages/Browse";
 import Signup from "./pages/Signup";
-import Header from "./components/Header";
 import Signin from "./pages/Signin";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
-import Footer from "./components/Footer";
 import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,6 +16,7 @@ import { useEffect } from "react";
 import useAuth from "./stores/useAuthStore.jsx";
 import OTPVerification from "./pages/OTPVerification.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import { Footer, Header } from "./components/index.js";
 
 const App = () => {
   const { checkAuth, isAuthenticated } = useAuth();

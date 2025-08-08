@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import Logo from '../assets/logo.jpg'
-import Input from '../components/Input'
-import Button from '../components/Button'
-import { Link, useNavigate } from 'react-router-dom'
-import {authService} from '../api/services.js'
+import { useState } from "react";
+import Logo from "../assets/logo.jpg";
+import { Link, useNavigate } from "react-router-dom";
+import { authService } from "../api/services.js";
+import { Button, Input } from "../components/index.js";
 
 const ForgotPassword = () => {
-
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,14 +26,13 @@ const ForgotPassword = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email))
-      newErrors.email = "Email is invalid";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-    const handleSubmit = async (e)=>{
-     e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -43,22 +40,24 @@ const ForgotPassword = () => {
     try {
       const response = await authService.forgotPassword(email);
 
-    if (response.success) {
-      localStorage.removeItem('otpEndTime');
-      setIsSubmitting(false);
-      navigate('/otp', { state: { email } });
-      return;
-    }
+      if (response.success) {
+        localStorage.removeItem("otpEndTime");
+        setIsSubmitting(false);
+        navigate("/otp", { state: { email } });
+        return;
+      }
     } catch (error) {
       setErrors({
-        form: error.response?.data?.message || "An error occurred. Please try again."
+        form:
+          error.response?.data?.message ||
+          "An error occurred. Please try again.",
       });
     } finally {
-      setIsSubmitting(false); 
-      setEmail('');
-      setErrors({}); 
+      setIsSubmitting(false);
+      setEmail("");
+      setErrors({});
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +66,9 @@ const ForgotPassword = () => {
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <img src={Logo} alt="ReUsed Logo" className="h-12 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900">Forgot Password</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Forgot Password
+            </h1>
             <p className="mt-2 text-gray-600">
               Enter your email address to reset your password
             </p>
@@ -121,7 +122,7 @@ const ForgotPassword = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default ForgotPassword
+export default ForgotPassword;

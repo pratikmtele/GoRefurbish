@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import useAuth from "../stores/useAuthStore";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { Button, Input } from "../components/index.js";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();

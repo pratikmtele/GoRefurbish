@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import Logo from "../assets/logo.jpg";
-import Input from "../components/Input";
-import Button from "../components/Button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../api/services.js";
 import { toast } from "react-toastify";
+import { Input, Button } from "../components/index.js";
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({

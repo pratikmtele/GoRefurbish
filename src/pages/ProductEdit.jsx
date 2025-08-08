@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { Button, Input } from "../components/index.js";
 
 const ProductEdit = () => {
   const { id } = useParams();

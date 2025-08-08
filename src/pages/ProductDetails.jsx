@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Button from "../components/Button";
+import { Button } from "../components/index.js";
 
 const ProductDetails = () => {
   const { id } = useParams();
