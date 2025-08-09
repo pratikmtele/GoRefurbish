@@ -94,10 +94,16 @@ export const productService = {
   // Create new product
   createProduct: async (productData) => {
     try {
-      const response = await api.post("/products", productData);
+      const response = await api.post("/products", productData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        timeout: 30000, // 30 seconds for file uploads
+      });
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.error("Product creation error:", error);
+      throw error.response?.data || error;
     }
   },
 
@@ -150,47 +156,6 @@ export const categoryService = {
   getProductsByCategory: async (categoryId) => {
     try {
       const response = await api.get(`/categories/${categoryId}/products`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
-};
-
-// Upload API calls
-export const uploadService = {
-  // Upload single file
-  uploadFile: async (file, onUploadProgress) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await api.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress,
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
-
-  // Upload multiple files
-  uploadFiles: async (files, onUploadProgress) => {
-    try {
-      const formData = new FormData();
-      files.forEach((file, index) => {
-        formData.append(`files[${index}]`, file);
-      });
-
-      const response = await api.post("/upload/multiple", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress,
-      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

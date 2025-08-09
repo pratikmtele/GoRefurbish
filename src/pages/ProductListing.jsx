@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { Button, Input } from "../components/index.js";
+import { productService } from "../api/index.js";
+import { toast } from "react-toastify";
 
 const ProductListing = () => {
   const [formData, setFormData] = useState({
@@ -25,101 +26,28 @@ const ProductListing = () => {
   const categories = [
     {
       id: 1,
-      name: "Electronics",
-      subcategories: [
-        "Smartphones",
-        "Laptops",
-        "Tablets",
-        "Gaming",
-        "Audio",
-        "Cameras",
-      ],
+      name: "Servers",
+      subcategories: ["Rackmount Server", "Tower Server", "AMD Based Server"],
     },
     {
       id: 2,
-      name: "Furniture",
-      subcategories: ["Living Room", "Bedroom", "Office", "Outdoor", "Storage"],
+      name: "Networking",
+      subcategories: ["Switch", "Router", "Firewall"],
     },
     {
       id: 3,
-      name: "Fashion",
+      name: "Components",
       subcategories: [
-        "Men's Clothing",
-        "Women's Clothing",
-        "Shoes",
-        "Accessories",
-        "Bags",
-      ],
-    },
-    {
-      id: 4,
-      name: "Books",
-      subcategories: [
-        "Fiction",
-        "Non-Fiction",
-        "Textbooks",
-        "Children's Books",
-        "Comics",
-      ],
-    },
-    {
-      id: 5,
-      name: "Home & Garden",
-      subcategories: ["Kitchen", "Bathroom", "Decor", "Tools", "Plants"],
-    },
-    {
-      id: 6,
-      name: "Sports",
-      subcategories: [
-        "Fitness",
-        "Outdoor Sports",
-        "Team Sports",
-        "Water Sports",
-        "Winter Sports",
-      ],
-    },
-    {
-      id: 7,
-      name: "Toys & Games",
-      subcategories: [
-        "Board Games",
-        "Video Games",
-        "Educational Toys",
-        "Action Figures",
-        "Puzzles",
-      ],
-    },
-    {
-      id: 8,
-      name: "Automotive",
-      subcategories: [
-        "Car Parts",
-        "Motorcycles",
-        "Accessories",
-        "Tools",
-        "Maintenance",
-      ],
-    },
-    {
-      id: 9,
-      name: "Musical Instruments",
-      subcategories: [
-        "Guitars",
-        "Keyboards",
-        "Drums",
-        "Wind Instruments",
-        "Audio Equipment",
-      ],
-    },
-    {
-      id: 10,
-      name: "Art & Collectibles",
-      subcategories: [
-        "Paintings",
-        "Sculptures",
-        "Antiques",
-        "Trading Cards",
-        "Vintage Items",
+        "Processor",
+        "Server Memory",
+        "Enterprise SSD",
+        "Enterprise HDD",
+        "Power Supply",
+        "Caddy",
+        "Rail Kit",
+        "Server Bezel",
+        "Raid Card",
+        "HBA Card",
       ],
     },
   ];
@@ -238,7 +166,6 @@ const ProductListing = () => {
     setSearchCategory(categoryName);
     setShowDropdown(false);
 
-    // Mark as touched and validate
     setTouched((prev) => ({ ...prev, category: true }));
     const error = validateField("category", categoryName);
     setErrors((prev) => ({ ...prev, category: error }));
@@ -306,11 +233,10 @@ const ProductListing = () => {
     setErrors((prev) => ({ ...prev, images: error }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Mark all fields as touched
     const allFields = Object.keys(formData);
     const touchedFields = {};
     allFields.forEach((field) => {
@@ -318,10 +244,8 @@ const ProductListing = () => {
     });
     setTouched(touchedFields);
 
-    // Validate entire form
     if (!validateForm()) {
       setIsSubmitting(false);
-      // Scroll to first error
       const firstErrorField = Object.keys(errors)[0];
       if (firstErrorField) {
         const element = document.querySelector(`[name="${firstErrorField}"]`);
@@ -333,13 +257,69 @@ const ProductListing = () => {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Form submitted:", formData);
-      alert("Product listing submitted successfully!");
-      setIsSubmitting(false);
+    try {
+      const productData = new FormData();
 
-      // Reset form on success
+      if (
+        !formData.title ||
+        !formData.description ||
+        !formData.category ||
+        !formData.condition ||
+        !formData.price
+      ) {
+        toast.error("Please fill in all required fields");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!formData.images || formData.images.length === 0) {
+        toast.error("Please upload at least one image");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      for (let img of formData.images) {
+        if (img.size > maxSize) {
+          toast.error(`Image "${img.name}" is too large. Maximum size is 5MB.`);
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      productData.append("title", formData.title.trim());
+      productData.append("description", formData.description.trim());
+      productData.append("category", formData.category);
+      productData.append("condition", formData.condition);
+      productData.append("price", formData.price);
+      productData.append("negotiable", formData.negotiable.toString());
+
+      formData.images.forEach((img, index) => {
+        productData.append("images", img);
+        console.log(`Image ${index + 1}:`, {
+          name: img.name,
+          size: `${(img.size / 1024 / 1024).toFixed(2)} MB`,
+          type: img.type,
+        });
+      });
+
+      console.log("=== Sending Product Data ===");
+      for (let [key, value] of productData.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}:`, {
+            name: value.name,
+            size: `${(value.size / 1024 / 1024).toFixed(2)} MB`,
+            type: value.type,
+          });
+        } else {
+          console.log(`${key}:`, value);
+        }
+      }
+
+      const response = await productService.createProduct(productData);
+
+      toast.success(response.message || "Product listed successfully!");
+
       setFormData({
         title: "",
         description: "",
@@ -353,7 +333,12 @@ const ProductListing = () => {
       setErrors({});
       setTouched({});
       setSearchCategory("");
-    }, 2000);
+    } catch (error) {
+      toast.error("Failed to list your product. Please try again");
+      console.error("Product upload error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -414,7 +399,7 @@ const ProductListing = () => {
                 htmlFor="category"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Product Category *
+                Product Category <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -520,7 +505,7 @@ const ProductListing = () => {
             {/* Product Condition */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                Product Condition *
+                Product Condition <span className="text-red-500">*</span>
               </label>
               <div className="flex space-x-6">
                 <div className="flex items-center">
@@ -572,7 +557,8 @@ const ProductListing = () => {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Upload Images * (Maximum 5 images)
+                Upload Images <span className="text-red-500">*</span> (Maximum 5
+                images)
               </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
@@ -686,13 +672,12 @@ const ProductListing = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Pricing
             </h2>
-
             <div className="mb-4">
               <label
                 htmlFor="price"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Selling Price *
+                Selling Price <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-2 text-gray-500">₹</span>
@@ -733,24 +718,17 @@ const ProductListing = () => {
 
           {/* Submit Button */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex justify-center">
               <Button
                 type="submit"
                 variant="primary"
                 size="lg"
-                fullWidth
                 loading={isSubmitting}
                 disabled={isSubmitting}
-                className="sm:flex-1"
+                className="w-full max-w-md"
               >
                 {isSubmitting ? "Submitting..." : "List Product"}
               </Button>
-
-              <Link to="/" className="sm:flex-1">
-                <Button variant="secondary" size="lg" fullWidth>
-                  Cancel
-                </Button>
-              </Link>
             </div>
 
             <p className="text-sm text-gray-500 mt-4 text-center">

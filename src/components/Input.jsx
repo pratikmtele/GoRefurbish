@@ -68,13 +68,7 @@ const Input = ({
     };
 
     if (type === "textarea") {
-      return (
-        <textarea
-          {...inputProps}
-          rows={rows || 4}
-          type={undefined} // Remove type prop for textarea
-        />
-      );
+      return <textarea {...inputProps} rows={rows || 4} type={undefined} />;
     }
 
     return <input {...inputProps} />;
