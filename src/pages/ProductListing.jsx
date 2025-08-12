@@ -294,27 +294,9 @@ const ProductListing = () => {
       productData.append("price", formData.price);
       productData.append("negotiable", formData.negotiable.toString());
 
-      formData.images.forEach((img, index) => {
+      formData.images.forEach((img) => {
         productData.append("images", img);
-        console.log(`Image ${index + 1}:`, {
-          name: img.name,
-          size: `${(img.size / 1024 / 1024).toFixed(2)} MB`,
-          type: img.type,
-        });
       });
-
-      console.log("=== Sending Product Data ===");
-      for (let [key, value] of productData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}:`, {
-            name: value.name,
-            size: `${(value.size / 1024 / 1024).toFixed(2)} MB`,
-            type: value.type,
-          });
-        } else {
-          console.log(`${key}:`, value);
-        }
-      }
 
       const response = await productService.createProduct(productData);
 

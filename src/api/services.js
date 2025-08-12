@@ -72,9 +72,9 @@ export const authService = {
 // Product API calls
 export const productService = {
   // Get all products
-  getProducts: async (params = {}) => {
+  getProducts: async () => {
     try {
-      const response = await api.get("/products", { params });
+      const response = await api.get("/products");
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

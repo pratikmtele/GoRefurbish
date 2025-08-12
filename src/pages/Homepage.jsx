@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FeaturedImage from "../assets/FeaturedImage.jpg";
 import { ProductCard, CategoryCard, Button } from "../components/index";
+import useProducts from "../stores/useProductStore";
 
 const Homepage = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const { allProducts, products, loading } = useProducts();
 
   const categories = [
     {
@@ -80,84 +82,14 @@ const Homepage = () => {
     },
   ];
 
-  const featuredItems = [
-    {
-      id: 1,
-      title: "Mid-century Coffee Table",
-      price: 6500,
-      location: "Mumbai, MH",
-      postedDate: "2 days ago",
-      status: "Approved",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20modern%20mid-century%20style%20wooden%20coffee%20table%20with%20hairpin%20legs%20against%20a%20simple%20white%20background%2C%20showing%20the%20item%20from%20a%20slight%20angle%20to%20display%20its%20features%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=3&orientation=landscape",
-      imageAlt: "Mid-century Coffee Table",
-    },
-    {
-      id: 2,
-      title: "PlayStation 5 Console",
-      price: 32000,
-      location: "Delhi, DL",
-      postedDate: "1 week ago",
-      status: "Pending",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20black%20Sony%20PlayStation%205%20gaming%20console%20with%20controller%20against%20a%20simple%20white%20background%2C%20showing%20the%20item%20from%20a%20slight%20angle%20to%20display%20its%20features%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=4&orientation=landscape",
-      imageAlt: "PlayStation 5 Console",
-    },
-    {
-      id: 3,
-      title: "Vintage Leather Messenger Bag",
-      price: 4500,
-      location: "Bangalore, KA",
-      postedDate: "3 days ago",
-      status: "Approved",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20vintage%20leather%20messenger%20bag%20or%20satchel%20against%20a%20simple%20white%20background%2C%20showing%20the%20item%20from%20a%20slight%20angle%20to%20display%20its%20features%20and%20texture%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=5&orientation=landscape",
-      imageAlt: "Vintage Leather Messenger Bag",
-    },
-    {
-      id: 4,
-      title: "Modern Table Lamp",
-      price: 2800,
-      location: "Pune, MH",
-      postedDate: "5 days ago",
-      status: "Pending",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20modern%20white%20ceramic%20table%20lamp%20with%20a%20fabric%20shade%20against%20a%20simple%20white%20background%2C%20showing%20the%20item%20from%20a%20slight%20angle%20to%20display%20its%20features%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=6&orientation=landscape",
-      imageAlt: "Modern Table Lamp",
-    },
-    {
-      id: 5,
-      title: "Vintage Vinyl Record Player",
-      price: 8500,
-      location: "Chennai, TN",
-      postedDate: "1 day ago",
-      status: "Approved",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20vintage%20vinyl%20record%20player%20or%20turntable%20against%20a%20simple%20white%20background%2C%20showing%20the%20item%20from%20a%20slight%20angle%20to%20display%20its%20features%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=7&orientation=landscape",
-      imageAlt: "Vintage Vinyl Record Player",
-    },
-    {
-      id: 6,
-      title: "Classic Literature Collection",
-      price: 1500,
-      location: "Kolkata, WB",
-      postedDate: "4 days ago",
-      status: "Pending",
-      imageUrl:
-        "https://readdy.ai/api/search-image?query=A%20professional%20product%20photo%20of%20a%20set%20of%20hardcover%20classic%20novels%20or%20books%20against%20a%20simple%20white%20background%2C%20showing%20the%20items%20arranged%20in%20a%20small%20stack%20to%20display%20their%20spines%20and%20covers%2C%20high%20quality%20e-commerce%20style%20product%20photography%20with%20soft%20shadows&width=400&height=300&seq=8&orientation=landscape",
-      imageAlt: "Classic Literature Collection",
-    },
-  ];
+  const featuredItems = [...products];
+  useEffect(() => {
+    allProducts();
+  }, []);
 
-  const handleFavoriteClick = (itemId) => {
-    console.log("Favorite clicked for item:", itemId);
-    // Add your favorite handling logic here
-  };
+  const handleFavoriteClick = (itemId) => {};
 
-  const handleCategoryClick = (categoryId, categoryTitle) => {
-    console.log("Category clicked:", categoryTitle);
-    // Add your category navigation logic here
-  };
+  const handleCategoryClick = (categoryId, categoryTitle) => {};
 
   const testimonials = [
     {
@@ -279,28 +211,44 @@ const Homepage = () => {
                   Handpicked quality items at great prices
                 </p>
               </div>
-              <a
-                href="#"
-                className="text-blue-600 hover:text-blue-800 font-medium flex items-center cursor-pointer"
-              >
-                View all <i className="fas fa-arrow-right ml-2"></i>
-              </a>
+              {featuredItems.length > 0 ? (
+                <a
+                  href="#"
+                  className="text-blue-600 hover:text-blue-800 font-medium flex items-center cursor-pointer"
+                >
+                  View all <i className="fas fa-arrow-right ml-2"></i>
+                </a>
+              ) : null}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredItems.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  title={item.title}
-                  price={item.price}
-                  location={item.location}
-                  postedDate={item.postedDate}
-                  imageUrl={item.imageUrl}
-                  imageAlt={item.imageAlt}
-                  status={item.status}
-                  onFavoriteClick={() => handleFavoriteClick(item.id)}
-                />
-              ))}
-            </div>
+            {featuredItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredItems.map((item) => (
+                  <ProductCard
+                    key={item._id}
+                    title={item.title}
+                    description={item.description}
+                    price={item.price}
+                    postedDate={new Date(item.createdAt).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
+                    imageUrl={item.featuredImage}
+                    imageAlt={item.title}
+                    isNegotible={item.isNegotible}
+                    isApproved={item.isApproved}
+                    onFavoriteClick={() => handleFavoriteClick(item._id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-xl">
+                <h1>No Products found</h1>
+              </div>
+            )}
           </div>
         </section>
         {/* What We Offer */}

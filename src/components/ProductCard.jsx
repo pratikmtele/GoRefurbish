@@ -3,15 +3,16 @@ import React from "react";
 const ProductCard = ({
   title,
   price,
-  location,
+  description,
   postedDate,
   imageUrl,
   imageAlt,
-  status = "Approved",
+  isNegotiable,
+  isApproved,
   onFavoriteClick,
 }) => {
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+  const getStatusColor = (isApproved) => {
+    switch (isApproved.toLowerCase()) {
       case "approved":
         return "bg-green-500";
       case "pending":
@@ -28,10 +29,10 @@ const ProductCard = ({
       <div className="relative h-64 overflow-hidden">
         <div
           className={`absolute top-4 left-4 px-3 py-1 ${getStatusColor(
-            status
+            isApproved
           )} text-white text-sm font-medium rounded-full`}
         >
-          {status}
+          {isApproved}
         </div>
         <img
           src={imageUrl}
@@ -54,10 +55,14 @@ const ProductCard = ({
             ₹{price}
           </span>
         </div>
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <i className="fas fa-map-marker-alt mr-2"></i>
-          <span>{location}</span>
-        </div>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{description}</p>
+        {isNegotiable ? (
+          <div
+            className={`w-fit mt-3 px-3 py-1 bg-gray-500 text-white text-sm font-medium rounded-full`}
+          >
+            Negotiable
+          </div>
+        ) : null}
         <div className="flex items-center justify-end">
           <span className="text-sm text-gray-500">Posted {postedDate}</span>
         </div>
